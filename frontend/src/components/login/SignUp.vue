@@ -30,7 +30,7 @@ export default {
                 }
                 if (response.data.result === 1) {
                     alert('Success')
-                    this.$router.push('/login')
+                    this.$router.push('/')
                 }
             })
             .catch(function () {
