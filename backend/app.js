@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 mongoose.connect('mongodb://localhost/apple_farm_simulation', 
   { useNewUrlParser: true, useUnifiedTopology: true });
@@ -37,6 +39,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('connect-history-api-fallback')());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(session({
+  secret: "ksdjwv@!!ssz224455mml;/.v",
+  resave: false,
+  saveUninitialized: true,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 60 * 60
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 2
+  }
+}))
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
