@@ -6,8 +6,9 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+const { jwtMiddleware } = require('./routes/lib/token');
+const dotenv = require('dotenv');
+dotenv.config();
 
 mongoose.connect('mongodb://localhost/apple_farm_simulation', 
   { useNewUrlParser: true, useUnifiedTopology: true });
@@ -21,8 +22,7 @@ db.once('open', function(){
 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var login = require('./routes/login');
+var apiRouter = require('./routes/api/index');
 
 var app = express();
 
@@ -36,25 +36,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('connect-history-api-fallback')());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(session({
-  secret: "ksdjwv@!!ssz224455mml;/.v",
-  resave: false,
-  saveUninitialized: true,
-  store: new MongoStore({
-    mongooseConnection: mongoose.connection,
-    ttl: 60 * 60
-  }),
-  cookie: {
-    maxAge: 1000 * 60 * 2
-  }
-}))
+app.use(jwtMiddleware);
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/api/login', login);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

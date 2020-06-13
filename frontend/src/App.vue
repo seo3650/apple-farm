@@ -1,24 +1,61 @@
 <template>
   <div id='app'>
-    <router-view></router-view>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="navbar-brand">Apple</div>
+      <div class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a href="/" class="nav-link">
+            <font-awesome-icon icon="home" />home
+          </a>
+        </li>
+      </div>
+      <div class="navbar-nav ml-auto" v-if="!currentUser">
+        <li class="nav-item">
+          <a href="/signUp" class="nav-link">
+            <font-awesome-icon icon="user-plus" /> Sign Up
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/login" class="nav-link">
+           <font-awesome-icon icon="sign-in-alt" /> login
+          </a>
+        </li>
+      </div>
+
+      <div class="navbar-nav ml-auto" v-if="currentUser">
+        <li class="nav-item">
+          <a href="profile" class="nav-link">
+            <font-awesome-icon icon="user" />
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href class="nav-link" @click="logOut">
+            <font-awesome-icon icon="sign-out-alt" /> logOut
+          </a>
+        </li>
+      </div>
+    </nav>
+    <div class="container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user
+    }
+  },
+  methods: {
+    logOut () {
+      this.$store.dispatch('auth/logout')
+      this.$router.push('/')
+    }
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>

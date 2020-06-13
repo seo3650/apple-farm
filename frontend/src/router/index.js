@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SignUp from '@/components/login/SignUp'
 import Home from '@/components/Home'
+import SignUp from '@/components/login/SignUp'
+import Login from '@/components/login/Login'
+import Profile from '@/components/login/Profile'
 
 Vue.use(VueRouter);
-
-const NotFound = { template: '<div>Not Found</div>' }
 
 // export default new VueRouter({
 const router = new VueRouter({
@@ -21,9 +21,15 @@ const router = new VueRouter({
             name: 'SignUp',
             component: SignUp
         },
-        { 
-            path: '*',
-            component: NotFound 
+        {
+            path: '/login',
+            name: 'Login',
+            component: Login
+        },
+        {
+            path: '/profile',
+            name: 'Profile',
+            component: Profile
         }
     ]
 })
