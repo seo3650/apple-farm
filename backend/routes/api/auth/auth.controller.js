@@ -11,7 +11,7 @@ exports.localRegister = async (req, res) => {
     })
     const result = Joi.validate(req.body.user, schema);
     if (result.error) {
-        res.status(400).json({ message: result.error });
+        res.status(400).json({ message: result.error.message });
         return;
     }
 
@@ -61,7 +61,7 @@ exports.localLogin = async (req, res) => {
     });
     const result = Joi.validate(req.body.user, schema);
     if (result.error) {
-        req.status(400).json({ message: result.error });
+        res.status(400).json({ message: result.error.message });
         return;
     }
 
@@ -114,3 +114,82 @@ exports.check = (req, res) => {
 
     res.json({ user: user.name });
 };
+
+exports.changePassword = async (req, res) => {
+    /* Check authority */
+    const { user } = req;
+    if (!user) {
+        res.status(403).json({ message: "Forbidden" })
+        return;
+    }
+
+    /* Verifiy data */
+    const schema = Joi.object().keys({
+        currentPassword: Joi.string().required(),
+        changePassword: Joi.string().required()
+    });
+    const result = Joi.validate(req.body.user, schema);
+    if (result.error) {
+        res.status(400).json({ message: result.error.message });
+        return;
+    }
+    let account = null;
+    try {
+        account = await Account.findOne({"_id": user._id});
+    } catch (e) {
+        res.status(500).json({ message: e.message });
+    }
+    const { currentPassword, changePassword } = req.body.user;
+    if (!account || !account.validatePassword(currentPassword)) {
+        res.status(403).json({ message: "Invalid PW" })
+        return;
+    }
+
+    /* Change password */
+    const change = await account.changePassword(changePassword);
+    if (change.error) {
+        res.status(500).json({ message: change.error });
+        return;
+    }
+    res.cookie('access_token', null, {
+        httpOnly: true,
+        maxAge: 0
+    });
+    res.status(200).json({ message: 'Success' })
+}
+
+exports.withdrawal = async (req, res) => {
+    /* Check authority */
+    const { user } = req;
+    if (!user) {
+        res.status(403).json({ message: "Forbidden" })
+        return;
+    }
+    /* Verifiy data */
+    const schema = Joi.object().keys({
+        password: Joi.string().required(),
+    });
+    const result = Joi.validate(req.body.user, schema);
+    if (result.error) {
+        res.status(400).json({ message: result.error.message });
+        return;
+    }
+    let account = null;
+    try {
+        account = await Account.findOne({"_id": user._id});
+    } catch (e) {
+        res.status(500).json({ message: e.message });
+    }
+    const { password } = req.body.user;
+    if (!account || !account.validatePassword(password)) {
+        res.status(403).json({ message: "Invalid PW" })
+        return;
+    }
+
+    const remove = await account.withdrawal();
+    if (remove.error) {
+        res.status(500).json({ message: remove.error });
+        return;
+    }
+    res.status(200).json({ message: 'Success' })
+}

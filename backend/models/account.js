@@ -28,6 +28,11 @@ Account.statics.localRegister = function({ id, password, name }) {
     return account.save();
 }
 
+Account.methods.changePassword = async function(password) {
+    this.password = hash(password);
+    return this.save();
+}
+
 Account.methods.validatePassword = function(password) {
     const hashed = hash(password);
     return this.password === hashed;
@@ -39,6 +44,10 @@ Account.methods.generateToken = function() {
         name: this.name
     }
     return generateToken(payload, 'account');
+}
+
+Account.methods.withdrawal = function() {
+    return this.remove();
 }
 
 module.exports = mongoose.model('Account', Account);

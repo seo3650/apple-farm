@@ -34,6 +34,24 @@ export const auth = {
                     return Promise.reject(error.response.data)
                 }
             )
+        }, changePW({ commit }, user) {
+            return AuthService.changePW(user).then(
+                () => {
+                    commit("logout")
+                },
+                error => {
+                    return Promise.reject(error.response.data)
+                }
+            )
+        }, withdrawal({ commit }, user) {
+            return AuthService.withdrawal(user).then(
+                () => {
+                    commit('logout')
+                },
+                error => {
+                    return Promise.reject(error.response.data)
+                }
+            )
         }
     },
     mutations: {

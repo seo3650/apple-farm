@@ -41,6 +41,33 @@ class AuthService {
         })
     }
 
+    changePW(user) {
+        return axios.post(API_URL + 'changePassword', {
+            user: {
+                currentPassword: user.currentPassword,
+                changePassword: user.changePassword,
+            }
+        })
+        .then(this.handleResponse)
+        .then(() => {
+            axios.post(API_URL + 'logout')
+            localStorage.removeItem('user')
+        })
+    }
+
+    withdrawal(user) {
+        return axios.post(API_URL + 'withdrawal', {
+            user: {
+                password: user.password
+            }
+        })
+        .then(this.handleResponse)
+        .then(() => {
+            axios.post(API_URL + 'logout')
+            localStorage.removeItem('user')
+        })
+    }
+
     handleResponse(res) {
         if (res.status === 401) {
             this.logout()
