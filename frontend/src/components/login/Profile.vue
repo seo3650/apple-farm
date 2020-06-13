@@ -119,15 +119,12 @@ export default {
             }
 
             if (this.account.currentPassword && this.account.changePassword) {
-                console.log('debug')
                 this.$store.dispatch('auth/changePW', this.account).then(
                     () => {
-                        console.log('debug')
                         alert('success')
                         this.$router.push('/')
                     },
                     error => {
-                        console.log('debug')
                         this.pwChangeLoading = false
                         this.changeMessage = error.message
                     }
@@ -151,7 +148,6 @@ export default {
                     },
                     error => {
                         this.withdrawalLoading = false
-                        console.log(error)
                         this.withdrawalMessage = error.message
                     }
                 )
