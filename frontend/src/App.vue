@@ -21,7 +21,6 @@
           </a>
         </li>
       </div>
-
       <div class="navbar-nav ml-auto" v-if="currentUser">
         <li class="nav-item">
           <a href="profile" class="nav-link">
@@ -35,7 +34,7 @@
         </li>
       </div>
     </nav>
-    <div class="container">
+    <div class="app">
       <router-view></router-view>
     </div>
   </div>
