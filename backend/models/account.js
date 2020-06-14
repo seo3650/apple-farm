@@ -11,7 +11,8 @@ const Account = new Schema({
     name: String,
     id: String,
     password: String,
-    create_date: { type: Date, default: Date.now }
+    favorites: [JSON],
+    create_date: { type: Date, default: Date.now },
 });
 
 Account.statics.findByID = function(id) {
@@ -22,7 +23,37 @@ Account.statics.localRegister = function({ id, password, name }) {
     const account = new this({
         id: id,
         password: hash(password),
-        name: name
+        name: name,
+        favorites: [
+            {
+                name: "Airpod",
+                selected: false,
+            },
+            {
+                name: "iMac",
+                selected: false,
+            },
+            {
+                name: "iPad",
+                selected: false,
+            },
+            {
+                name: "iPhone",
+                selected: false,
+            },
+            {
+                name: "Macbook",
+                selected: false,
+            },
+            {
+                name: "MacPro",
+                selected: false,
+            },
+            {
+                name: "Watch",
+                selected: false,
+            },
+        ]
     });
 
     return account.save();
@@ -48,6 +79,20 @@ Account.methods.generateToken = function() {
 
 Account.methods.withdrawal = function() {
     return this.remove();
+}
+
+Account.methods.updateFavorite = function(name, favorite) {
+    account.favorites.name = favorite;
+    return this.save();
+}
+
+Account.methods.getFavorites = function() {
+    return this.favorites;
+}
+
+Account.methods.setFavorites = function(items) {
+    this.favorites = items;
+    return this.save();
 }
 
 module.exports = mongoose.model('Account', Account);

@@ -4,8 +4,31 @@
             <h2>Hi, {{name}}!</h2>
             <h1 class="display-4">Welcome:)</h1>
             <hr class="my-4">
-            <h5>What is your favorites?</h5>
-
+        </header>
+            <h5>What are your favorite products?</h5>
+            <ul class="proudct-list list">
+                <li v-for="item in items" :key="item.name">
+                    <div v-if="item.selected" class="selected">
+                        <img :src="getImgUrl(item)" alt="product image" v-on:click="cancelSelect(item.name)">
+                    </div>
+                    <div v-else class="unselected">
+                        <img :src="getImgUrl(item)" alt="product image" v-on:click="select(item.name)">
+                    </div>
+                </li>
+            </ul>
+            <div class="form-group">
+                <button class="btn btn-dark btn-block" :disables="favoriteLoading" v-on:click="apply">
+                    <span class="spinner-border spinner-border-sm" v-show="favoriteLoading"></span>
+                    <span>Apply</span>
+                </button>
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger" role="alert" v-if="favoritemessage">{{favoritemessage}}</div>
+            </div>
+            <div class="copyright">아이콘 제작자 
+                <a href="https://www.flaticon.com/kr/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/kr/" title="Flaticon">www.flaticon.com</a>
+            </div>
+        <body class="jumbotron">
             <h5>You can change your information.</h5>
             <form name="form" @submit.prevent="changePassword">
                 <div class="from-group">
@@ -74,7 +97,7 @@
                     <div class="alert alert-danger" role="alert" v-if="withdrawalMessage">{{withdrawalMessage}}</div>
                 </div>
             </form>
-        </header>
+        </body>
     </div>
 </template>
 
@@ -95,7 +118,28 @@ export default {
             withdrawalLoading: false,
             changeMessage: '',
             withdrawalMessage: '',
+            favoriteLoading: false,
+            favoritemessage: '',
+            Airpod: require('../../assets/Airpod.jpg'),
+            iMac: require('../../assets/iMac.jpg'),
+            iPad: require('../../assets/iPad.jpg'),
+            iPhone: require('../../assets/iPhone.jpg'),
+            Macbook: require('../../assets/Macbook.jpg'),
+            MacPro: require('../../assets/MacPro.jpg'),
+            Watch: require('../../assets/Watch.jpg'),
+            items: [],
         }
+    },
+    async created() {
+        this.items = await this.$store.dispatch('favorite/getItems').then(
+            (favorites) => { 
+                return favorites
+            },
+            error => {
+                this.favoriteLoading = false
+                this.favoriteMessage = error.message
+            }
+        )
     },
     mounted() {
         UserService.getUserContent().then(
@@ -155,8 +199,64 @@ export default {
                 this.withdrawalLoading = false
                 return
             }
-        }
-    }
-
+        },
+        getImgUrl(item) {
+            var images = require.context('../../assets/')
+            return images('./' + item.name + "_icon" + ".png")
+        },
+        select(name) {
+            this.items.filter(function(obj) {
+                return obj.name === name
+            })[0].selected = true
+        },
+        cancelSelect(name) {
+            this.items.filter(function(obj) {
+                return obj.name === name
+            })[0].selected = false
+        },
+        apply() {
+            this.items = this.$store.dispatch('favorite/setItems', this.items).then(
+                () => {
+                    this.favoriteMessage = "success"
+                },
+                error => {
+                    this.favoriteLoading = false
+                    this.favoriteMessage = error.message
+                }
+            )
+            this.$router.push('/')
+        },
+    },
 }
 </script>
+
+<style scoped>
+.copyright {
+    font-size: 0.1em;
+    float: right;
+}
+img {
+    width: 100px;
+}
+ul li{
+    list-style:none;
+    float: left;
+    /* display: inline; */
+    outline: 1px;
+    margin: 10px 10px 10px 10px;
+}
+.unselected .selected {
+    width: 30%;
+}
+.unselected:hover {
+    opacity: 0.5;
+}
+.selected {
+    opacity: 0.5;
+}
+.proudct-list:after {
+    content: "";
+    clear: both;
+    display: block;
+}
+</style>

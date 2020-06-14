@@ -1,13 +1,14 @@
 <template>
     <div id="app">
         <div class="Empty">
+            
             <img :src="Empty" alt="Empty">
             <div class="Others">
-                <div class="iMac">
-                    <img :src="iMac" alt="iMac">
-                </div>
                 <div class="Airpod">
                     <img :src="Airpod" alt="Airpod">
+                </div>
+                <div class="iMac">
+                    <img :src="iMac" alt="iMac">
                 </div>
                 <div class="iPad">
                     <img :src="iPad" alt="iPad">
@@ -41,12 +42,21 @@ export default {
             iPhone: require('../assets/iPhone.jpg'),
             Macbook: require('../assets/Macbook.jpg'),
             MacPro: require('../assets/MacPro.jpg'),
-            Watch: require('../assets/Watch.jpg')
+            Watch: require('../assets/Watch.jpg'),
+            items: [],
         }
     },
-    mounted() {
-
-    }
+    async created() {
+        this.items = await this.$store.dispatch('favorite/getItems').then(
+            (favorites) => { 
+                return favorites
+            },
+            error => {
+                this.favoriteLoading = false
+                this.favoriteMessage = error.message
+            }
+        )
+    },
 }
 </script>
 <style scoped>
@@ -56,12 +66,6 @@ export default {
         height: auto;
         overflow: hidden;
     }
-    img:hover{
-        opacity: 1;
-    }
-    /* .Others:hover {
-        opacity: 1; 
-    } */
     .Airpod:hover {
         opacity: 1; 
         z-index:10;
@@ -92,7 +96,7 @@ export default {
     }
     .Empty {
         position: relative;
-        top: 200px;
+        top: 0px;
     }
     .Airpod {
         opacity: 0.7;

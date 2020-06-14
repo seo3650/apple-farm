@@ -72,10 +72,11 @@ exports.localLogin = async (req, res) => {
         account = await Account.findByID(id);
     } catch (e) {
         res.status(500).json({ message: e.message });
+        return;
     }
 
     if (!account || !account.validatePassword(password)) {
-        res.status(403).json({ message: "Invalid ID or PW" })
+        res.status(401).json({ message: "Invalid ID or PW" })
         return;
     }
 
@@ -108,7 +109,7 @@ exports.logout = async (req, res) => {
 exports.check = (req, res) => {
     const { user } = req;
     if (!user) {
-        res.status(403).json({ message: "Forbidden" })
+        res.status(401).json({ message: "Forbidden" })
         return;
     }
 
@@ -119,7 +120,7 @@ exports.changePassword = async (req, res) => {
     /* Check authority */
     const { user } = req;
     if (!user) {
-        res.status(403).json({ message: "Forbidden" })
+        res.status(401).json({ message: "Forbidden" })
         return;
     }
 
@@ -138,10 +139,11 @@ exports.changePassword = async (req, res) => {
         account = await Account.findOne({"_id": user._id});
     } catch (e) {
         res.status(500).json({ message: e.message });
+        return;
     }
     const { currentPassword, changePassword } = req.body.user;
     if (!account || !account.validatePassword(currentPassword)) {
-        res.status(403).json({ message: "Invalid PW" })
+        res.status(401).json({ message: "Invalid PW" })
         return;
     }
 
@@ -162,7 +164,7 @@ exports.withdrawal = async (req, res) => {
     /* Check authority */
     const { user } = req;
     if (!user) {
-        res.status(403).json({ message: "Forbidden" })
+        res.status(401).json({ message: "Forbidden" })
         return;
     }
     /* Verifiy data */
@@ -179,10 +181,11 @@ exports.withdrawal = async (req, res) => {
         account = await Account.findOne({"_id": user._id});
     } catch (e) {
         res.status(500).json({ message: e.message });
+        return;
     }
     const { password } = req.body.user;
     if (!account || !account.validatePassword(password)) {
-        res.status(403).json({ message: "Invalid PW" })
+        res.status(401).json({ message: "Invalid PW" })
         return;
     }
 
