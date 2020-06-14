@@ -3,7 +3,7 @@ import FavoriteService from '../services/favorite-service'
 const initialState = [
     {
         name: "Airpod",
-        selected: true,
+        selected: false,
     },
     {
         name: "iMac",

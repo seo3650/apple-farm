@@ -1,32 +1,35 @@
 <template>
     <div id="app">
         <div class="Empty">
-            
             <img :src="Empty" alt="Empty">
             <div class="Others">
-                <div class="Airpod">
+                <div class="Airpod" v-if="items[0].selected">
                     <img :src="Airpod" alt="Airpod">
                 </div>
-                <div class="iMac">
+                <div class="iMac" v-if="items[1].selected">
                     <img :src="iMac" alt="iMac">
                 </div>
-                <div class="iPad">
+                <div class="iPad" v-if="items[2].selected">
                     <img :src="iPad" alt="iPad">
                 </div>
-                <div class="iPhone">
+                <div class="iPhone" v-if="items[3].selected">
                     <img :src="iPhone" alt="iPhone">
                 </div>
-                <div class="Macbook">
+                <div class="Macbook" v-if="items[4].selected">
                     <img :src="Macbook" alt="Macbook">
                 </div>
-                <div class="MacPro">
+                <div class="MacPro" v-if="items[5].selected">
                     <img :src="MacPro" alt="MacPro">
                 </div>
-                <div class="Watch">
+                <div class="Watch" v-if="items[6].selected">
                     <img :src="Watch" alt="Watch">
                 </div>
             </div>
         </div>
+        <body class="jumbotron Price">
+            <h2>{{minPrice}} ~ {{maxPrice}}￦</h2>
+            <h2>옵션까지 한다면? {{fullOptPrice}}￦</h2>
+        </body>
     </div>
 </template>
 
@@ -44,18 +47,33 @@ export default {
             MacPro: require('../assets/MacPro.jpg'),
             Watch: require('../assets/Watch.jpg'),
             items: [],
+            minPrice: 0,
+            maxPrice: 0,
+            fullOptPrice: 0,
+            minPrices: [199000, 1440000, 499000, 550000, 1320000, 7899000, 259000],
+            maxPrices: [329000, 6300000, 1299000, 1550000, 3690000, 8599000, 539000],
+            optionPrices: [329000, 19737000, 2703000, 2299000, 8763000, 73376000, 1679000],
         }
     },
-    async created() {
+    async mounted() {
         this.items = await this.$store.dispatch('favorite/getItems').then(
             (favorites) => { 
                 return favorites
             },
-            error => {
-                this.favoriteLoading = false
-                this.favoriteMessage = error.message
+            () => {
+                return this.$store.state.favorite
             }
         )
+        for (var idx in this.items) {
+            if (this.items[idx].selected) {
+                this.minPrice += this.minPrices[idx]
+                this.maxPrice += this.maxPrices[idx]
+                this.fullOptPrice += this.optionPrices[idx];
+            }
+        }
+        this.minPrice = this.minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        this.maxPrice = this.maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        this.fullOptPrice = this.fullOptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
 }
 </script>
@@ -121,9 +139,9 @@ export default {
         z-index: 3;
         position: absolute;
         width: 25%;
-        top: 48%;
-        right: -70.5%;
-        left: 70.5%;
+        top: 49%;
+        right: -71%;
+        left: 71%;
     }
     .iPhone {
         opacity: 0.7;
@@ -160,5 +178,9 @@ export default {
         left: 60%;
         right: -60%;
     }
-
+    .Price {
+        position: relative;
+        text-align: center;
+        font-family: system-ui;
+    }
 </style>
