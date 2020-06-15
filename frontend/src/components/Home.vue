@@ -55,7 +55,15 @@ export default {
             optionPrices: [329000, 19737000, 2703000, 2299000, 8763000, 73376000, 1679000],
         }
     },
+    computed: {
+        loggedIn() {
+            return this.$store.state.auth.status.loggedIn
+        }
+    },
     async mounted() {
+        if (!this.loggedIn) {
+            this.$router.push('/login')
+        }
         this.items = await this.$store.dispatch('favorite/getItems').then(
             (favorites) => { 
                 return favorites

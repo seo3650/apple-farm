@@ -20,20 +20,6 @@ db.once('open', function(){
   console.log("Connected to mongod server");
 });
 
-// const MongoClient = require('mongodb').MongoClient;
-// const uri = "mongodb+srv://seo:sparcs@apple-farm-onq1r.gcp.mongodb.net/apple_farm?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, { useNewUrlParser: true });
-// client.connect();
-
-// var db = client.connection;
-// console.log(client)
-// db.on('error', function(error) {
-//   console.error("Connection error;", error);
-// });
-// db.once('open', function(){
-//   console.log("Connected to mongod server");
-// });
-
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api/index');
 
