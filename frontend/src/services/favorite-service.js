@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8080/api/favorite'
+const API_URL = '/api/favorite'
 
 class FavoriteService {
     getItems() {

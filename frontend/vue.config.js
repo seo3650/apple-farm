@@ -6,7 +6,6 @@ module.exports = {
                 changeOrigin: true,
             }
         },
-        host: 'ssal.sparcs.org',
-        port: '8080'
+        disableHostCheck: true,
     }
 }
