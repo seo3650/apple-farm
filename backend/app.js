@@ -10,7 +10,7 @@ const { jwtMiddleware } = require('./routes/lib/token');
 const dotenv = require('dotenv');
 dotenv.config();
 
-mongoose.connect('mongodb://localhost/apple_farm_simulation', 
+mongoose.connect("mongodb+srv://seo:sparcs@apple-farm-onq1r.gcp.mongodb.net/apple_farm?retryWrites=true&w=majority", 
   { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on('error', function(error) {
@@ -20,6 +20,19 @@ db.once('open', function(){
   console.log("Connected to mongod server");
 });
 
+// const MongoClient = require('mongodb').MongoClient;
+// const uri = "mongodb+srv://seo:sparcs@apple-farm-onq1r.gcp.mongodb.net/apple_farm?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true });
+// client.connect();
+
+// var db = client.connection;
+// console.log(client)
+// db.on('error', function(error) {
+//   console.error("Connection error;", error);
+// });
+// db.once('open', function(){
+//   console.log("Connected to mongod server");
+// });
 
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api/index');

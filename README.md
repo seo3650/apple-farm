@@ -1,1 +1,1 @@
-apple-farm-simulation
+apple-farm

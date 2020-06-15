@@ -218,13 +218,13 @@ export default {
             this.items = this.$store.dispatch('favorite/setItems', this.items).then(
                 () => {
                     this.favoriteMessage = "success"
+                    this.$router.push('/')
                 },
                 error => {
                     this.favoriteLoading = false
                     this.favoriteMessage = error.message
                 }
             )
-            this.$router.push('/')
         },
     },
 }

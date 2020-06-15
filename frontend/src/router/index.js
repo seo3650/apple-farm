@@ -7,7 +7,6 @@ import Profile from '@/components/login/Profile'
 
 Vue.use(VueRouter);
 
-// export default new VueRouter({
 const router = new VueRouter({
     mode: 'history',
     routes: [
